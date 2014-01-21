@@ -19,10 +19,10 @@ class osx_install_data(install_data):
         self.set_undefined_options('install', ('install_lib', 'install_dir'))
         install_data.finalize_options(self)
 
-if sys.platform == "darwin": 
-    cmdclasses = {'install_data': osx_install_data} 
-else: 
-    cmdclasses = {'install_data': install_data} 
+if sys.platform == "darwin":
+    cmdclasses = {'install_data': osx_install_data}
+else:
+    cmdclasses = {'install_data': install_data}
 
 def fullsplit(path, result=None):
     """
@@ -66,9 +66,20 @@ if len(sys.argv) > 1 and sys.argv[1] == 'bdist_wininst':
     for file_info in data_files:
         file_info[0] = '\\PURELIB\\%s' % file_info[0]
 
+import sys
+
+if 'sdist' in sys.argv:
+    import mmf_release_tools
+    version = mmf_release_tools.generate_release_version("0.2", __file__, git_format="%h")
+    mmf_release_tools.write_release_version(version)
+else:
+    with open("RELEASE-VERSION", "r") as f:
+        version = f.readlines()[0].strip()
+
+
 setup(
     name = "Django-FacebookConnect",
-    version = "0.2",
+    version = version,
     description='Django app impliments facebook connect. Requires pyfacebook.',
     author='Ryan Mark',
     author_email='ryan@mrk.cc',
